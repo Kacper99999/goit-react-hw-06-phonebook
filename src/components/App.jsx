@@ -1,4 +1,6 @@
 import React ,{useState, useEffect, useRef} from 'react';
+import { useDispatch , useSelector } from 'react-redux'; 
+import { addPhone } from '../redux/reducer';
 import { nanoid } from 'nanoid';
 import Contacts from '/src/components/Contacts';
 import Filter from '/src/components/Filter'
@@ -7,6 +9,10 @@ import '/src/components/styles.css';
 
 export default function App() {
 
+  const contact = useSelector(state => state.contact.contact);
+  const filterselector = useSelector(state => state.contact.filter);
+  const dispatch = useDispatch();
+
 const [state, setState] = useState({
 contacts: [],
 filter: '',
@@ -14,37 +20,25 @@ name: '',
 number: ''
 })
 
+const [name, setName] = useState("");
+const [number, setNumber] = useState("");
 
 
-const handleChange = (e) => {
-  const {name, value} = e.currentTarget;
-  setState((preState) => ({
-    ...preState,
-    [name]:value
-  }));
-  };
+
+// const handleChange = (e) => {
+//   const {name, value} = e.currentTarget;
+//   setState((preState) => ({
+//     ...preState,
+//     [name]:value
+//   }));
+//   };
 
 
 const handleSubmit = (e) => {
   e.preventDefault();
-  const { name, number, contacts } = state;
-  const contactExists = contacts.some(con => con.name === name);
-
-  if (contactExists) {
-    alert("Kontakt o takiej nazwie już istnieje!");
-    return;
+  if(name && number){
+    dispatch(addPhone({id:nanoid, name, number}))
   }
-
-  const newContact = {
-    id: nanoid(),
-    name: name,
-    number: number
-  }
-
-  setState((prevState) => ({
-    ...prevState,
-    contacts: [...prevState.contacts, newContact]
-  }));
 };
 
 
@@ -99,8 +93,8 @@ return (
   <h1>Phonebook</h1>
   <p>ppp</p>
     <Contacts
-      handleChange={handleChange}
-      handleChange2={handleChange}
+      handleChange={setName}
+      handleChange2={setNumber}
       handleSubmit={handleSubmit}
     />
     <h2>Contacts</h2>

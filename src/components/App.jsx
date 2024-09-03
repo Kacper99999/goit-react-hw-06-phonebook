@@ -1,6 +1,6 @@
 import React ,{useState, useEffect, useRef} from 'react';
 import { useDispatch , useSelector } from 'react-redux'; 
-import { addPhone } from '../redux/reducer';
+import { addPhone, removePhone, filterContact } from '../redux/reducer';
 import { nanoid } from 'nanoid';
 import Contacts from '/src/components/Contacts';
 import Filter from '/src/components/Filter'
@@ -8,14 +8,13 @@ import ContactList from '/src/components/ContactList';
 import '/src/components/styles.css';
 
 export default function App() {
-
-  const contact = useSelector(state => state.contact.contact);
-  const filterselector = useSelector(state => state.contact.filter);
+  let contact = useSelector(state => state.contacts.contacts);
+  const filterselector = useSelector(state => state.contacts.filter);
   const dispatch = useDispatch();
 
 const [state, setState] = useState({
 contacts: [],
-filter: '',
+filterr: '',
 name: '',
 number: ''
 })
@@ -37,61 +36,50 @@ const [number, setNumber] = useState("");
 const handleSubmit = (e) => {
   e.preventDefault();
   if(name && number){
-    dispatch(addPhone({id:nanoid, name, number}))
+    dispatch(addPhone({id:nanoid(), name, number}));
+    setName("");
+    setNumber("");
   }
 };
 
 
 const searchContact = (e) => {
   const filter = e.target.value.toLowerCase();
-  setState((preState) =>({
-    ...preState,
-    filter : filter
-  }));
+  dispatch(filterContact(filter));
 }
 
 
 const removeContact = (idToRemove) => {
-  setState((preState) => ({
-    ...preState,
-    contacts : preState.contacts.filter(contact => contact.id !== idToRemove)
-  }));
-  
+  dispatch(removePhone(idToRemove));
 };
 
 
-    const { contacts, filter } = state;
-    const filteredContacts = contacts.filter((con) =>
-      con.name.toLowerCase().startsWith(filter)
+    const filteredContacts = contact.filter((con) =>
+      con.name.toLowerCase().startsWith(filterselector)
     );
 
     const isMounted = useRef(false);
     
     useEffect(()=>{
-      const zmienna = localStorage.getItem("contacts")
-      if(zmienna){
-        setState((preState) =>({
-          ...preState,
-          contacts:JSON.parse(zmienna)
-        }))
-      }
+      const zmienna = localStorage.getItem("contacts");
+      contact = zmienna;
+      console.log(contact);
       },[])
       
     
     useEffect(()=>{
       if(isMounted.current){
-        localStorage.setItem("contacts", JSON.stringify(state.contacts));
+        localStorage.setItem("contacts", JSON.stringify(contact));
       }
       else{
         isMounted.current = true;
       }
-    },[state.contacts]);
+    },[contact]);
 
 return (
   
   <>
   <h1>Phonebook</h1>
-  <p>ppp</p>
     <Contacts
       handleChange={setName}
       handleChange2={setNumber}
@@ -102,8 +90,8 @@ return (
       search={searchContact}
     />
     <ContactList
-      contacts={contacts}
-      filter={filter}
+      contacts={contact}
+      filter={filterselector}
       filteredContacts={filteredContacts}
       removeContact={removeContact}
     />

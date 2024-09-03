@@ -9,7 +9,7 @@ function Contacts ({handleChange, handleChange2, handleSubmit }){
       <form className="form" onSubmit={handleSubmit}>
         <label>Name</label>
         <input
-          onChange={handleChange}
+          onChange={e=>handleChange(e.target.value)}
           type="text"
           name="name"
           pattern="^[a-zA-Z '\-]+$"
@@ -18,7 +18,7 @@ function Contacts ({handleChange, handleChange2, handleSubmit }){
         />
         <label>Phone</label>
         <input
-          onChange={handleChange2}
+          onChange={e=>handleChange2(e.target.value)}
           type="tel"
           name="number"
           pattern="^\+?[0-9\(\) \-]+$"

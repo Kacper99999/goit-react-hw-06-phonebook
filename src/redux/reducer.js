@@ -1,4 +1,4 @@
-import { createStlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 
 const initialState = {
@@ -8,7 +8,7 @@ const initialState = {
     number: ''
     }
 
-const phonebook = createStlice({
+const phonebook = createSlice({
     name:"phonebook",
     initialState,
     reducers:{
@@ -16,10 +16,10 @@ const phonebook = createStlice({
             state.contacts.push(action.payload)
         },
         removePhone : (state, action) =>{
-            state.contacts.filter(con => con.id !== action.payload)
+            state.contacts = state.contacts.filter(con => con.id !== action.payload)
         },
         filterContact : (state, action) =>{
-            state.filter === action.payload
+            state.filter = action.payload;
         }
     }
 

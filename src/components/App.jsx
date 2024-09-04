@@ -1,4 +1,4 @@
-import React ,{useState, useEffect, useRef} from 'react';
+import {useState, useEffect} from 'react';
 import { useDispatch , useSelector } from 'react-redux'; 
 import { addPhone, removePhone, filterContact } from '../redux/reducer';
 import { nanoid } from 'nanoid';
@@ -8,29 +8,26 @@ import ContactList from '/src/components/ContactList';
 import '/src/components/styles.css';
 
 export default function App() {
-  let contact = useSelector(state => state.contacts.contacts);
+  const contacts = useSelector(state => state.contacts.contacts);
   const filterselector = useSelector(state => state.contacts.filter);
   const dispatch = useDispatch();
-
-const [state, setState] = useState({
-contacts: [],
-filterr: '',
-name: '',
-number: ''
-})
 
 const [name, setName] = useState("");
 const [number, setNumber] = useState("");
 
 
+    
+useEffect(()=>{
+  const saverdContacts = localStorage.getItem("contacts");
+  if(saverdContacts){
+    const parsedContacts = JSON.parse(saverdContacts);
+    parsedContacts.forEach(contact => dispatch(addPhone(contact)));
+  }
+},[dispatch])
 
-// const handleChange = (e) => {
-//   const {name, value} = e.currentTarget;
-//   setState((preState) => ({
-//     ...preState,
-//     [name]:value
-//   }));
-//   };
+useEffect(()=>{
+    localStorage.setItem("contacts", JSON.stringify(contacts));
+},[contacts]);
 
 
 const handleSubmit = (e) => {
@@ -54,30 +51,13 @@ const removeContact = (idToRemove) => {
 };
 
 
-    const filteredContacts = contact.filter((con) =>
+    const filteredContacts = contacts.filter((con) =>
       con.name.toLowerCase().startsWith(filterselector)
     );
+    console.log(JSON.stringify(contacts));
 
-    const isMounted = useRef(false);
-    
-    useEffect(()=>{
-      const zmienna = localStorage.getItem("contacts");
-      contact = zmienna;
-      console.log(contact);
-      },[])
-      
-    
-    useEffect(()=>{
-      if(isMounted.current){
-        localStorage.setItem("contacts", JSON.stringify(contact));
-      }
-      else{
-        isMounted.current = true;
-      }
-    },[contact]);
 
 return (
-  
   <>
   <h1>Phonebook</h1>
     <Contacts
@@ -90,7 +70,7 @@ return (
       search={searchContact}
     />
     <ContactList
-      contacts={contact}
+      contacts={contacts}
       filter={filterselector}
       filteredContacts={filteredContacts}
       removeContact={removeContact}

@@ -16,7 +16,9 @@ function ContactList({contacts, filter, filteredContacts,removeContact}){
         ) : (
         <ul>
           {filteredContacts.map((contact) => (
-            <li key={contact.id}>{contact.name} - {contact.number} <button onClick={() => removeContact(contact.id)}>Delate</button></li>
+            <li key={contact.id}>
+              {contact.name} - {contact.number} <button onClick={() => removeContact(contact.id)}>Delate</button>
+              </li>
           ))}
         </ul>
       )}

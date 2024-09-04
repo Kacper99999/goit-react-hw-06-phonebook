@@ -54,7 +54,6 @@ const removeContact = (idToRemove) => {
     const filteredContacts = contacts.filter((con) =>
       con.name.toLowerCase().startsWith(filterselector)
     );
-    console.log(JSON.stringify(contacts));
 
 
 return (

@@ -4,8 +4,6 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     contacts: [],
     filter: '',
-    name: '',
-    number: ''
     }
 
 const phonebook = createSlice({
